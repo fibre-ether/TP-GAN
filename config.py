@@ -1,6 +1,6 @@
 settings = dict()
-settings['images_list'] = 'D:\Ressources\Data\Faces\put_cleaned\images_list.yml'
-settings['images_dir'] = 'D:\Ressources\Data\Faces\put_cleaned'
+settings['images_list'] = 'image_list_reduced.yml'
+settings['images_dir'] = 'put_cleaned'
 settings['batch_size'] = 2
 settings['nb_epoch'] = 1
 settings['device'] = 'cuda'
@@ -9,4 +9,4 @@ settings['discriminator_path'] = 'model/model_discriminator_{}.pth'
 settings['opt_G_path'] = 'opt/opt_generator_{}.pth'
 settings['opt_D_path'] = 'opt/opt_discriminator_{}.pth'
 settings['histo'] = 'pickle'
-settings['light_cnn'] = 'LightCNN_29Layers_V2_checkpoint.pth.tar'
+settings['light_cnn'] = 'LightCNN_29Layers_V2_checkpoint.pth'

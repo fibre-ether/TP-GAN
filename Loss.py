@@ -59,8 +59,9 @@ class LossGenerator(nn.Module):
     def pixelwise_loss(self, img128_fake, img64_fake, img32_fake, left_eye_fake, right_eye_fake, nose_fake, mouth_fake, batch):
         global_loss = self._pixelwise_loss_global(img128_fake, img64_fake, img32_fake, batch)
         local_loss  = self._pixelwise_loss_local(left_eye_fake, right_eye_fake, nose_fake, mouth_fake, batch)
-        local_loss2 = self._pixelwise_loss_local2(img128_fake, batch)
-        return global_loss + 3*local_loss + 3*local_loss2
+        """ TODO: add this loss function back """
+        # local_loss2 = self._pixelwise_loss_local2(img128_fake, batch)
+        return global_loss + 3*local_loss #+ 3*local_loss2
     
     def symmetry_loss(self, img128_fake, img64_fake, img32_fake):
         img128_fake_mirror = img128_fake.index_select(3, torch.arange(img128_fake.size()[3]-1, -1, -1).long().to(device))
@@ -105,7 +106,7 @@ class LossDiscriminator(nn.Module):
         
     def forward(self, D, img128_fake, batch):
         adv_D_loss = torch.mean(D(img128_fake.detach())) - torch.mean(D(batch['img128GT']))
-        alpha = torch.rand(batch['img128GT'].shape[0] , 1 , 1 , 1 ).expand_as(batch['img128GT']).pin_memory().to(device)
+        alpha = torch.rand(batch['img128GT'].shape[0] , 1 , 1 , 1 ).expand_as(batch['img128GT']).clone().pin_memory().to(device)
         interpolated_x = Variable(alpha * img128_fake.detach().data.to(device) + (1.0 - alpha) * batch['img128GT'].data.to(device), requires_grad = True) 
         out = D(interpolated_x)
         dxdD = torch.autograd.grad(outputs = out, inputs = interpolated_x, grad_outputs = torch.ones(out.size()).to(device), retain_graph = True, create_graph = True, only_inputs = True)[0].view(out.shape[0],-1)
