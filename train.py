@@ -148,6 +148,7 @@ if __name__ == "__main__":
         fig.add_subplot(rows, columns, 4)
         plt.imshow(img)
         plt.tight_layout()
+        plt.savefig(f"train_result_{epoch}epochs")
         plt.show()
         
         print("End of testing")

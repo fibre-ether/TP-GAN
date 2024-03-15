@@ -93,4 +93,5 @@ if __name__ == "__main__":
             fig.savefig(args.output)
         except Exception as e:
             print("Couldn't save figure : {}".format(e))
+    plt.savefig("testimage.png")
     plt.show()
