@@ -38,14 +38,23 @@ class LossGenerator(nn.Module):
         Nose : 46x66
         Mouth : 69x25
         '''
+        # print(name)
+        # print([img[i,:, :, :].shape for i in range(img.shape[0])])
         if name == 'left_eye' or name == 'right_eye':
+            # print([[i, '{}-{}'.format(patch['y'][i], patch['y'][i]+22), '{}-{}'.format(patch['x'][i],patch['x'][i]+28)] for i in range(img.shape[0])])
+            # print([img[i,:, int(patch['y'][i]):int(patch['y'][i])+22, int(patch['x'][i]):int(patch['x'][i])+28].shape for i in range(img.shape[0])])
             return torch.cat([img[i,:, int(patch['y'][i]):int(patch['y'][i])+22, int(patch['x'][i]):int(patch['x'][i])+28] for i in range(img.shape[0])], 0)
         if name == 'nose':
+            # print([[i, '{}-{}'.format(patch['y'][i], patch['y'][i]+66), '{}-{}'.format(patch['x'][i],patch['x'][i]+46)] for i in range(img.shape[0])])
+            # print([img[i,:, int(patch['y'][i]):int(patch['y'][i])+66, int(patch['x'][i]):int(patch['x'][i])+46].shape for i in range(img.shape[0])])
             return torch.cat([img[i,:, int(patch['y'][i]):int(patch['y'][i])+66, int(patch['x'][i]):int(patch['x'][i])+46] for i in range(img.shape[0])], 0)
         if name == 'mouth':
+            # print([[i, '{}-{}'.format(patch['y'][i], patch['y'][i]+25), '{}-{}'.format(patch['x'][i],patch['x'][i]+54)] for i in range(img.shape[0])])
+            # print([img[i,:, int(patch['y'][i]):int(patch['y'][i])+25, int(patch['x'][i]):int(patch['x'][i])+54].shape for i in range(img.shape[0])])
             return torch.cat([img[i,:, int(patch['y'][i]):int(patch['y'][i])+25, int(patch['x'][i]):int(patch['x'][i])+54] for i in range(img.shape[0])], 0)
     
     def _pixelwise_loss_local2(self, img128_fake, batch):
+        # print(batch['patches']['left_eye'])
         lle = self.L1Loss(self._cut(img128_fake.cpu(), batch['patches']['left_eye'], 'left_eye'),
                           self._cut(batch['img128GT'].cpu(), batch['patches']['left_eye'], 'left_eye'))
         lre = self.L1Loss(self._cut(img128_fake.cpu(), batch['patches']['right_eye'], 'right_eye'),
@@ -60,8 +69,8 @@ class LossGenerator(nn.Module):
         global_loss = self._pixelwise_loss_global(img128_fake, img64_fake, img32_fake, batch)
         local_loss  = self._pixelwise_loss_local(left_eye_fake, right_eye_fake, nose_fake, mouth_fake, batch)
         """ TODO: add this loss function back """
-        # local_loss2 = self._pixelwise_loss_local2(img128_fake, batch)
-        return global_loss + 3*local_loss #+ 3*local_loss2
+        local_loss2 = self._pixelwise_loss_local2(img128_fake, batch)
+        return global_loss + 3*local_loss + 3*local_loss2
     
     def symmetry_loss(self, img128_fake, img64_fake, img32_fake):
         img128_fake_mirror = img128_fake.index_select(3, torch.arange(img128_fake.size()[3]-1, -1, -1).long().to(device))
