@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
         batch = testSet[0]
         for k in batch.keys():
-            if k == 'id':
+            if k == "id" or k == "patches":
                 continue
             batch[k] = batch[k].reshape((1, *batch[k].shape))
         noise = torch.FloatTensor(np.random.normal(0,0.02,(len(batch['img128']), 64))).to(device)
