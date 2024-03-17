@@ -11,10 +11,24 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import pickle
 import os
+import argparse
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='''Train the model. ''')
+    parser.add_argument('-l', default=False, help='load weights')
+    parser.add_argument('-v', '--weights-version', type=int, default='0', help='version of the loaded weights, i.e.: 0 or 1')
+    
+    args = parser.parse_args()
+    return args
 
 if __name__ == "__main__":
 
     print('Starting...')
+
+    args = parse_args()
+    print("args:")
+    print("load weights:", args.l)
+    print("saved weights version:", args.weights_version)
 
     trainSet, testSet = createDataset(settings['images_list'], settings['images_dir'])
     trainloader = torch.utils.data.DataLoader(trainSet, batch_size = settings['batch_size'], shuffle = True, num_workers = 2, pin_memory = True)
@@ -38,11 +52,13 @@ if __name__ == "__main__":
 
     print('Optimizer created')
 
-    #G.module.load_state_dict(torch.load('model/model_generator_1.pth'))
-    #D.module.load_state_dict(torch.load('model/model_discriminator_1.pth'))
-    #optimizer_G.load_state_dict(torch.load('opt/opt_generator_1.pth'))
-    #optimizer_D.load_state_dict(torch.load('opt/opt_discriminator_1.pth'))
-    #print('Finished loading checkpoints')
+    if (args.l):
+        saved_weights_version = args.weights_version
+        G.module.load_state_dict(torch.load(f'model/model_generator_{saved_weights_version}.pth'))
+        D.module.load_state_dict(torch.load(f'model/model_discriminator_{saved_weights_version}.pth'))
+        optimizer_G.load_state_dict(torch.load(f'opt/opt_generator_{saved_weights_version}.pth'))
+        optimizer_D.load_state_dict(torch.load(f'opt/opt_discriminator_{saved_weights_version}.pth'))
+        print('Finished loading checkpoints')
 
     loss_G = LossGenerator()
     loss_D = LossDiscriminator()
