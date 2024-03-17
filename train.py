@@ -54,6 +54,7 @@ if __name__ == "__main__":
 
     if (args.l):
         saved_weights_version = args.weights_version
+        print(f'loading model/model_generator_{saved_weights_version}.pth... and other weights')
         G.module.load_state_dict(torch.load(f'model/model_generator_{saved_weights_version}.pth'))
         D.module.load_state_dict(torch.load(f'model/model_discriminator_{saved_weights_version}.pth'))
         optimizer_G.load_state_dict(torch.load(f'opt/opt_generator_{saved_weights_version}.pth'))
