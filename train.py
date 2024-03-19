@@ -72,7 +72,7 @@ if __name__ == "__main__":
     loss_G_histo = list()
     img_fake_histo = list()
 
-    for epoch in tqdm(range(settings['nb_epoch'])):
+    for epoch in range(settings['nb_epoch']):
         for batch in tqdm(trainloader):
             
             noise = torch.FloatTensor(np.random.normal(0,0.02,(len(batch['img128']), 64))).to(device)
