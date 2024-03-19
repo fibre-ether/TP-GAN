@@ -16,7 +16,7 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser(description='''Train the model. ''')
     parser.add_argument('-l', default=False, help='load weights')
-    parser.add_argument('-v', '--weights-version', type=int, default='0', help='version of the loaded weights, i.e.: 0 or 1')
+    parser.add_argument('-v', '--weights-version', type=str, default='0', help='version of the loaded weights, i.e.: 0 or 1')
     
     args = parser.parse_args()
     return args
