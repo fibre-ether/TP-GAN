@@ -64,7 +64,7 @@ def retrieve_feature_dict(feature_tuple, name):
   
   return {}
 
-def plot_features_mediapipe(image, img, imgGT, id):
+def plot_features_mediapipe(image, img, imgGT, id, show_img):
   # Initialize MediaPipe Face Mesh
   mp_face_mesh = mp.solutions.face_mesh
   # Create a Face Mesh instance
