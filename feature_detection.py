@@ -10,6 +10,7 @@ import mediapipe as mp
 def parse_args():
     parser = argparse.ArgumentParser(description='''outputs features''')
     parser.add_argument('-i', '--iteration', type=str, default='1', help='iteration number')
+    parser.add_argument('-s', default=False, help='show images')
 
     args = parser.parse_args()
     return args
@@ -53,6 +54,16 @@ def process_file_names(path_id):
 
   return fn_dict
 
+def retrieve_feature_dict(feature_tuple, name):
+  # x, y, width, height
+  max_dims = {
+    'eye':{'height':22, 'width':44},
+    'nose':{'height':66, 'width':46},
+    'mouth':{'height':25, 'width':69},
+  }
+  
+  return {}
+
 def plot_features_mediapipe(image, img, imgGT, id):
   # Initialize MediaPipe Face Mesh
   mp_face_mesh = mp.solutions.face_mesh
@@ -86,6 +97,13 @@ def plot_features_mediapipe(image, img, imgGT, id):
       left_eye = (int(landmarks[463].x*width)-offset_x_eyes, int(landmarks[257].y*height)-offset_y_eyes, int(landmarks[446].x*width)-int(landmarks[463].x*width)+2*offset_x_eyes, int(landmarks[253].y*height)-int(landmarks[257].y*height)+2*offset_y_eyes)
       nose = (int(landmarks[98].x*width)-offset_x_nose, int(landmarks[168].y*height)-offset_y_nose, int(landmarks[327].x*width)-int(landmarks[98].x*width)+2*offset_x_nose, int(landmarks[2].y*height)-int(landmarks[168].y*height)+2*offset_y_nose)
       mouth = (int(landmarks[57].x*width)-offset_x_mouth, int(landmarks[0].y*height)-offset_y_mouth, int(landmarks[287].x*width)-int(landmarks[57].x*width)+2*offset_x_mouth, int(landmarks[17].y*height)-int(landmarks[0].y*height)+2*offset_y_mouth)
+      
+      # right_eye = (int(landmarks[226].x*width), int(landmarks[27].y*height), int(landmarks[133].x*width)-int(landmarks[226].x*width), int(landmarks[23].y*height)-int(landmarks[27].y*height))
+      # left_eye = (int(landmarks[463].x*width), int(landmarks[257].y*height), int(landmarks[446].x*width)-int(landmarks[463].x*width), int(landmarks[253].y*height)-int(landmarks[257].y*height))
+      # nose = (int(landmarks[98].x*width), int(landmarks[168].y*height), int(landmarks[327].x*width)-int(landmarks[98].x*width), int(landmarks[2].y*height)-int(landmarks[168].y*height))
+      # mouth = (int(landmarks[57].x*width), int(landmarks[0].y*height), int(landmarks[287].x*width)-int(landmarks[57].x*width), int(landmarks[17].y*height)-int(landmarks[0].y*height))
+      
+      # retrieve_feature_dict(right_eye, 'eye')
 
       result_dict['Left eye'] = {'height':left_eye[3], 'width':left_eye[2], 'x':min(128-44,left_eye[1]), 'y':min(128-22,left_eye[0])}
       result_dict['Mouth'] = {'height':mouth[3], 'width':mouth[2], 'x':min(128-69,mouth[1]), 'y':min(128-25,mouth[0])}
@@ -101,13 +119,14 @@ def plot_features_mediapipe(image, img, imgGT, id):
       cv2.rectangle(image, mouth, (0, 255, 0), 2)
 
       # Display the image
-    #   cv2_imshow(image)
+      if show_img:
+        cv2_imshow(image)
   else:
       print("No faces detected.")
 
   return result_dict
 
-def load_images_and_plot_features(files):
+def load_images_and_plot_features(files, show_img):
   images = []
   result_dict = {}
   for filename in files['img']:
@@ -116,7 +135,7 @@ def load_images_and_plot_features(files):
       if img is not None:
           # plot_features(img)
           # img = cv2.imread(filename)
-          result = plot_features_mediapipe(img, filename, files['imgGT'], files['id'])
+          result = plot_features_mediapipe(img, filename, files['imgGT'], files['id'], show_img)
           if bool(result):
             result_dict[filename] = result
       else:
@@ -127,6 +146,7 @@ def load_images_and_plot_features(files):
 
 args = parse_args()
 iter = int(args.iteration)
+show_img = args.s
 results_dict = dict()
 # for i in range(1,2):
 print(f"{iter}th iteration")
@@ -134,10 +154,10 @@ fn_dict = process_file_names(iter)
 #   print(fn_dict)
 # for super_key in fn_dict.keys():
 for key in fn_dict['01'].keys():
-    result = load_images_and_plot_features(fn_dict['01'][key])
+    result = load_images_and_plot_features(fn_dict['01'][key], show_img)
     results_dict.update(result)
 for key in fn_dict['02'].keys():
-    result = load_images_and_plot_features(fn_dict['02'][key])
+    result = load_images_and_plot_features(fn_dict['02'][key], show_img)
     results_dict.update(result)
 #   print(result)
 
