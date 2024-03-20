@@ -5,7 +5,7 @@ import cv2
 import yaml
 import numpy as np
 import mediapipe as mp
-# from google.colab.patches import cv2_imshow
+from google.colab.patches import cv2_imshow
 
 def parse_args():
     parser = argparse.ArgumentParser(description='''outputs features''')
