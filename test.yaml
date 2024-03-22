@@ -1,0 +1,49 @@
+001_01_01_041_10_crop_128.png:
+  Left eye:
+    height: 17
+    width: 18
+    x: 33
+    y: 73
+  Mouth:
+    height: 15
+    width: 37
+    x: 59
+    y: 55
+  Nose:
+    height: 41
+    width: 29
+    x: 35
+    y: 61
+  Right eye:
+    height: 17
+    width: 28
+    x: 36
+    y: 30
+  id: 18
+  img: 001_01_01_041_10_crop_128.png
+  imgGT: 001_01_01_051_10_crop_128.png
+001_01_01_051_10_crop_128.png:
+  Left eye:
+    height: 16
+    width: 25
+    x: 37
+    y: 69
+  Mouth:
+    height: 14
+    width: 40
+    x: 59
+    y: 46
+  Nose:
+    height: 41
+    width: 29
+    x: 38
+    y: 50
+  Right eye:
+    height: 17
+    width: 25
+    x: 40
+    y: 29
+  id: 18
+  img: 001_01_01_051_10_crop_128.png
+  imgGT: 001_01_01_051_10_crop_128.png
+
