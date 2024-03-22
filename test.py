@@ -11,6 +11,9 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import pickle
 import os
+from LightCNN import LightCNN_29Layers_v2
+from config import settings
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='''Show the output of trained TP-GAN on the input images.
@@ -23,6 +26,18 @@ def parse_args():
 
     args = parser.parse_args()
     return args
+
+ExtractFeatures = torch.nn.DataParallel(LightCNN_29Layers_v2(num_classes=80013)).to(settings['device'])
+ExtractFeatures.load_state_dict(torch.load(settings['light_cnn'])['state_dict'])
+L1Loss = nn.L1Loss().to(settings['device'])
+
+def identity_preserving_loss(img128_fake, batch):
+    _, feat_fake = ExtractFeatures((img128_fake[:,0,:,:]*0.2126 + img128_fake[:,0,:,:]*0.7152 + img128_fake[:,0,:,:]*0.0722).view(img128_fake.shape[0], 1, img128_fake.shape[2], img128_fake.shape[3]))
+    _, feat_GT = ExtractFeatures((batch['img128GT'][:,0,:,:]*0.2126 + batch['img128GT'][:,0,:,:]*0.7152 + batch['img128GT'][:,0,:,:]*0.0722).view(batch['img128GT'].shape[0], 1, batch['img128GT'].shape[2], batch['img128GT'].shape[3]))
+    return L1Loss(feat_fake, feat_GT)
+
+def total_variation_loss(img128_fake):
+        return torch.mean(torch.abs(img128_fake[:,:,:-1,:] - img128_fake[:,:,1:,:])) + torch.mean(torch.abs(img128_fake[:,:,:,:-1] - img128_fake[:,:,:,1:]))
 
 if __name__ == "__main__":
 
@@ -64,6 +79,11 @@ if __name__ == "__main__":
         img128_fake, img64_fake, img32_fake, encoder_predict, local_fake, left_eye_fake, right_eye_fake, nose_fake, mouth_fake, local_GT = \
             G(batch['img128'], batch['img64'], batch['img32'], batch['left_eye'], batch['right_eye'], batch['nose'], batch['mouth'], noise)
 
+        ip_loss = identity_preserving_loss(img128_fake, batch).cpu().detach().numpy()
+        tv_loss = total_variation_loss(img128_fake).cpu().detach().numpy()
+        print("ip loss:", ip_loss)
+        print("clarity loss:", tv_loss)
+        
         img_list.append({'input': toPIL(batch['img128'].detach().cpu().reshape(*batch['img128'].shape[1:])), 
                             'fake': toPIL(img128_fake.detach().cpu().reshape(*img128_fake.shape[1:])), 
                             'GT': toPIL(batch['img128GT'].detach().cpu().reshape(*batch['img128GT'].shape[1:])), 
