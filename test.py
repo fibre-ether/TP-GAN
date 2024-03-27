@@ -93,7 +93,7 @@ if __name__ == "__main__":
     
     columns = 4
     rows = len(img_list)
-    fig=plt.figure(figsize=(4, 3 * rows))
+    fig=plt.figure(figsize=(16, 4 * rows))
     fig.axes
     for i in range(rows):
         images = img_list[i]

@@ -1,12 +1,13 @@
-settings = dict()
+with open("config.py", "w") as file:
+    file.write("""settings = dict()
 settings['images_list'] = 'image_list_reduced_new.yml'
-settings['images_dir'] = 'E:/major project/data/unzips'
+settings['images_dir'] = 'E:/major project/data/unzips/test'
 settings['batch_size'] = 2
-settings['nb_epoch'] = 10
+settings['nb_epoch'] = 1
 settings['device'] = 'cuda'
 settings['generator_path'] = 'model/model_generator_{}.pth'
 settings['discriminator_path'] = 'model/model_discriminator_{}.pth'
 settings['opt_G_path'] = 'opt/opt_generator_{}.pth'
 settings['opt_D_path'] = 'opt/opt_discriminator_{}.pth'
 settings['histo'] = 'pickle'
-settings['light_cnn'] = 'LightCNN_29Layers_V2_checkpoint.pth'
+settings['light_cnn'] = 'LightCNN_29Layers_V2_checkpoint.pth'""")
