@@ -91,49 +91,49 @@ if __name__ == "__main__":
                             'local': toPIL(local_fake.detach().cpu().reshape(*local_fake.shape[1:]))})
 
     
-    # columns = 4
-    # rows = len(img_list)
-    # fig=plt.figure(figsize=(4, 3 * rows))
-    # fig.axes
-    # for i in range(rows):
-    #     images = img_list[i]
-    #     img = images['input']
-    #     fig.add_subplot(rows, columns, 1 + 3*i)
-    #     plt.imshow(img)
-    #     img = images['fake']
-    #     fig.add_subplot(rows, columns, 2 + 3*i)
-    #     plt.imshow(img)
-    #     # img = images['local']
-    #     # fig.add_subplot(rows, columns, 3 + 4*i)
-    #     # plt.imshow(img)
-    #     img = images['GT']
-    #     fig.add_subplot(rows, columns, 3 + 3*i)
-    #     plt.imshow(img)
-    # plt.tight_layout()
+    columns = 4
+    rows = len(img_list)
+    fig=plt.figure(figsize=(4, 3 * rows))
+    fig.axes
+    for i in range(rows):
+        images = img_list[i]
+        img = images['input']
+        fig.add_subplot(rows, columns, 1 + 3*i)
+        plt.imshow(img)
+        img = images['fake']
+        fig.add_subplot(rows, columns, 2 + 3*i)
+        plt.imshow(img)
+        img = images['local']
+        fig.add_subplot(rows, columns, 3 + 4*i)
+        plt.imshow(img)
+        img = images['GT']
+        fig.add_subplot(rows, columns, 3 + 3*i)
+        plt.imshow(img)
+    plt.tight_layout()
     
-    num_rows = len(img_list)
+    # num_rows = len(img_list)
 
-    # Create a figure and a grid of subplots
-    fig, axes = plt.subplots(nrows=num_rows, ncols=3, figsize=(5,2*num_rows))
-    iteration_num = args.model.split("_")[2].split(".")[0]
-    fig.suptitle(f"Iteration {iteration_num}")
-    cols = ['Input', 'Generated', 'Ground Truth']
+    # # Create a figure and a grid of subplots
+    # fig, axes = plt.subplots(nrows=num_rows, ncols=3, figsize=(5,2*num_rows))
+    # iteration_num = args.model.split("_")[2].split(".")[0]
+    # fig.suptitle(f"Iteration {iteration_num}")
+    # cols = ['Input', 'Generated', 'Ground Truth']
 
-    for ax, col in zip(axes, cols):
-        ax.set_title(col)
+    # for ax, col in zip(axes, cols):
+    #     ax.set_title(col)
 
-    # Flatten the axes to iterate over them
-    axes = axes.flatten()
+    # # Flatten the axes to iterate over them
+    # axes = axes.flatten()
 
-    # Iterate over the image data and plot the images
-    for i, image_group in enumerate(img_list):
-        axes[i * 3].imshow(image_group['input'].resize((512,512)), cmap='gray')
-        axes[i * 3].axis('off')
-        axes[i * 3 + 1].imshow(image_group['fake'].resize((512,512)), cmap='gray')
-        axes[i * 3 + 1].axis('off')
-        axes[i * 3 + 2].imshow(image_group['GT'].resize((512,512)), cmap='gray')
-        axes[i * 3 + 2].axis('off')
-    fig.tight_layout()
+    # # Iterate over the image data and plot the images
+    # for i, image_group in enumerate(img_list):
+    #     axes[i * 3].imshow(image_group['input'].resize((512,512)), cmap='gray')
+    #     axes[i * 3].axis('off')
+    #     axes[i * 3 + 1].imshow(image_group['fake'].resize((512,512)), cmap='gray')
+    #     axes[i * 3 + 1].axis('off')
+    #     axes[i * 3 + 2].imshow(image_group['GT'].resize((512,512)), cmap='gray')
+    #     axes[i * 3 + 2].axis('off')
+    # fig.tight_layout()
     if args.output != '':
         try:
             fig.savefig(args.output)
