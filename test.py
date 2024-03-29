@@ -91,25 +91,6 @@ if __name__ == "__main__":
                             'local': toPIL(local_fake.detach().cpu().reshape(*local_fake.shape[1:]))})
 
     
-    columns = 4
-    rows = len(img_list)
-    fig=plt.figure(figsize=(16, 4 * rows))
-    fig.axes
-    for i in range(rows):
-        images = img_list[i]
-        img = images['input']
-        fig.add_subplot(rows, columns, 1 + 3*i)
-        plt.imshow(img)
-        img = images['fake']
-        fig.add_subplot(rows, columns, 2 + 3*i)
-        plt.imshow(img)
-        img = images['local']
-        fig.add_subplot(rows, columns, 3 + 4*i)
-        plt.imshow(img)
-        img = images['GT']
-        fig.add_subplot(rows, columns, 3 + 3*i)
-        plt.imshow(img)
-    plt.tight_layout()
     
     # num_rows = len(img_list)
 
@@ -134,11 +115,29 @@ if __name__ == "__main__":
     #     axes[i * 3 + 2].imshow(image_group['GT'].resize((512,512)), cmap='gray')
     #     axes[i * 3 + 2].axis('off')
     # fig.tight_layout()
+    
+    columns = 4
+    rows = min(10, len(img_list))
+    fig=plt.figure(figsize=(16, 4 * rows))
+    for i in range(rows):
+        images = img_list[i]
+        img = images['input']
+        fig.add_subplot(rows, columns, 1 + 4*i)
+        plt.imshow(img)
+        img = images['fake']
+        fig.add_subplot(rows, columns, 2 + 4*i)
+        plt.imshow(img)
+        img = images['local']
+        fig.add_subplot(rows, columns, 3 + 4*i)
+        plt.imshow(img)
+        img = images['GT']
+        fig.add_subplot(rows, columns, 4 + 4*i)
+        plt.imshow(img)
+    plt.tight_layout()
     if args.output != '':
         try:
             fig.savefig(args.output)
         except Exception as e:
             print("Couldn't save figure : {}".format(e))
-
     plt.savefig("testimage.png")
     plt.show()
